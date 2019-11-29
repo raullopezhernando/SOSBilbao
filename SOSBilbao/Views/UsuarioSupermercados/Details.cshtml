@@ -1,0 +1,35 @@
+﻿@model IEnumerable<SOSBilbao.Models.UsuarioSupermercado>
+
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Supermercados Favoritos</h1>
+
+<div class="row" id="row">
+
+    @*MSTRAR LOS SUPERMERCADOS FAVORITOS DE UN USUARIO*@
+    @*Una vez que hemos agregado un supermercado a favoritos en esta vista podemos ver tarjetas con las supermercados favoritos*@
+    @*Tarjeta "Farmacia Favorita " con : Empresa,Direccion, Zona, Telefono, Longitud, Latitud *@
+
+    @foreach (var item in Model)
+    {
+        <div class="card col-sm-12 col-md-6 col-lg-4 border-primary" style="width: 18rem;">
+            <h3 class="nombre card-header ">@item.Supermercado.Empresa</h3>
+            <div class="card-body">
+                <h5 class="card-title">@item.Supermercado.Direccion</h5>
+                <h6 class="card-subtitle">@item.Supermercado.Zona</h6>
+                <h6 class="card-subtitle text-muted">@item.Supermercado.Telefono</h6>
+                <h6 class="latitud card-subtitle text-muted ">@item.Supermercado.Longitud</h6>
+                <h6 class="longitud card-subtitle text-muted ">@item.Supermercado.</h6>
+            </div>
+            <img style="height: 200px; width: 100%; display: block;" src="@Url.Content(item.Supermercado.Imagen)" alt="Card image">
+            <div class="card-body">
+                <input type="submit" class="btn btn-outline-primary" value="Ver Horarios" />
+            </div>
+
+        </div>
+    }
+</div>
+

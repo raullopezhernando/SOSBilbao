@@ -1,0 +1,163 @@
+﻿@model SOSBilbao.Models.ViewModels.MostrarSupermercadosVM
+@using Newtonsoft.Json;
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<Usuario> _signInManager;
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@{
+
+    static string DiferenciaHoraActualHoraCierre(string horaCierreSupermercado)
+    {
+
+        DateTime horaCierre = Convert.ToDateTime(horaCierreSupermercado);
+        DateTime horaActual = DateTime.Now;
+        TimeSpan hora = horaCierre.Subtract(horaActual);
+        String diferencia = String.Format("{0}:{1}:{2}", (hora.Hours - 1), hora.Minutes, hora.Seconds);
+        return diferencia;
+
+    }
+}
+
+<h1 style="margin:2%; color:black ;background-color:white; border:1px solid black ;text-align:center"> Supermercados</h1>
+
+
+
+
+
+@*SELECCIONAR LA ZONA*@
+
+
+<form asp-controller="Supermercados" asp-action="Index">
+    <input type="text" class="form-control inputbuscar" placeholder="Introduzca el Nombre del Supermercado" name="nombre" style="background-color:white;color: black ;width: 23%" />
+    <select name="zona" id="selectTipo">
+        <option value="">Todos</option>
+        @foreach (Zona zona in Model.Zonas)
+        {
+            <option value="@zona.Nombre">@zona.Nombre</option>
+        }
+    </select>
+
+    <input type="submit" value="Buscar Supermercado" />
+</form>
+@if (Model.Zonas.Count == 0)
+{
+    <h1>No se ha encontrado ninguna Supermercado en esta zona</h1>
+}
+else
+{
+    <body style="background-image:url(../mapabilbao.jpg)">
+
+        <div class="row" id="row">
+
+            @*MOSTRAR LAS FARMACIAS EN FUNCION DE LA ZONA*@
+
+            @*Pongo Model.Farmacias porque es la forma de referirse al ViewModel siempre Model.Farmacias en vez de ViewModels.Farmacias*@
+            @*IMPORTANTE. Para hacer referencia a la imagen se pone @Url.Content(farmacia.Imagen) y en la imagen de base de datos se pondria
+                en cada imagen "~/fimagenes/" y el nombre de la foto que seria farmacia1.jpg*@
+
+
+            @foreach (Supermercado supermercado in Model.Supermercados)
+            {
+            <div class="card col-sm-12 col-md-6 col-lg-4 border-primary" style="width:18rem;background-color:aliceblue ;border: 2px outset blue">
+                <img src="@Url.Content(supermercado.Imagen)" class="card-img-top " alt="">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        @supermercado.Direccion
+                    </h5>
+                    <p class="nombre card-text">@supermercado.Zona.Nombre</p>
+                    <p class="longitud card-text">@supermercado.Longitud</p>
+                    <p class="latitud card-text">@supermercado.Longitud</p>
+
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Telefono : @supermercado.Telefono</li>
+                </ul>
+                <div class="card-body">
+                    @*Si esta logeado aparecera el boton de "Agregar Favoritos" sino no y enviara la Id para asociar el usuario al favorito*@
+
+                    @if (_signInManager.IsSignedIn(User))
+                    {
+
+                        <a asp-controller="UsuarioSupermercados" style="padding-left:5%" asp-action="GuardarFavorito" asp-route-id="@supermercado.Id"><img title="Agregar a Favoritos" src="../iconos/iconofavorito.png" /></a>
+                        <span><a asp-action="Create" asp-route-id="@supermercado.Id"><img style="padding-right:5%" title="Crear Supermercado" src="../iconos/iconocrear.png" /></a>  <a asp-action="Delete" asp-route-id="@supermercado.Id"><img title="Eliminar Supermercado" src="../iconos/iconoeliminar.png" /></a></span>
+                    }
+
+
+                    @*INICIO DEL MODAL PARA "MOSTRAR HORARIOS DE SUPERMERCADOS"*@
+
+                    <a data-toggle="modal" data-target=".bd-example-modal-sm"><img title="Ver Horarios " src="../iconos/iconohorario.png" /></a>
+
+                    <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-ml">
+                            <div class="modal-content" style="background-color:aqua;border:4px outset blue">
+                                <div class="modal-header tituloHorarios">
+                                    <h5 class="modal-title" style="font-weight:bold">Horario Supermercado</h5>
+                                    <div class="modal-body">
+                                        <p> HORARIO APERTURA : @supermercado.HoraApertura</p>
+                                        <p>HORARIO CIERRE    : @supermercado.HoraCierre</p>
+                                        <p> ¿CUANTO FALTA PARA QUE CIERRE?  : @DiferenciaHoraActualHoraCierre(supermercado.HoraCierre)</p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            }
+        </div>
+
+    </body>
+
+}
+
+<div id="mapsupermercadogrande"> </div>
+
+
+
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin="">
+</script>
+
+<script>
+
+    // MAPA BASE DE SUPERMERCADOS (FAVORITOS SUPERMERCADOS)
+
+    let mymap = L.map('mapsupermercadogrande').setView([43.2626276, -2.9475673], 13)
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+
+    }).addTo(mymap);
+    // Pasamos las longitudes y las latitudes desde el index de UsuarioSupermercados
+
+
+    var nombreSupermercado = document.getElementsByClassName("nombre");
+    var latitudSupermercado = document.getElementsByClassName("latitud");
+    var longitudSupermercado = document.getElementsByClassName("longitud");
+
+
+
+    for (let z = 0; z < 25; z++) {
+
+        var supermarketIcon = L.icon({
+            iconUrl: '../iconos/supermarket.png',
+            iconSize: [32, 37], // Tamaño del Icono
+        });
+
+        L.marker([longitudSupermercado[z].innerText, latitudSupermercado[z].innerText], { icon: supermarketIcon }).addTo(mymap).bindPopup(nombreSupermercado[z]);
+
+    }
+
+</script>
+
+

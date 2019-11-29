@@ -1,0 +1,273 @@
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+/* Provide sufficient contrast against white background */
+a {
+  color: #0366d6;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+/*.imagen1 {
+    padding-left: 15%;
+    padding-right: 20%
+}*/
+
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px; /* Vertically center the text there */
+}
+
+
+/*Mapas Leaflet (Propiedades)*/
+
+#mapfarmaciafavoritos {
+    height: 180px;
+    margin-top: 7%;
+    border: 4px outset blue;
+}
+
+#maptaxi {
+    height: 180px;
+    margin-top:7%;
+    border:4px outset blue;
+}
+
+#mapsupermercado {
+    height: 180px;
+    margin-top: 7%;
+    border: 4px outset blue;
+}
+
+#mapsupermercadogrande {
+    height: 400px;
+    margin-top: 7%;
+    border: 4px outset blue;
+}
+
+#mapfarmacia {
+    height: 400px;
+    margin-top: 7%;
+    border: 4px outset blue;
+}
+
+#maptaxiindex {
+    height: 400px;
+    margin-top: 7%;
+    border: 4px outset blue;
+}
+
+.longitudParadaTaxi {
+    display: none;
+}
+
+.latitudParadaTaxi {
+    display: none
+}
+
+
+.longitud {
+   display:none;
+}
+
+.latitud {
+    display:none
+}
+
+
+
+.imagenesfarmacias {
+    max-width: 100%
+}
+
+#logo {
+    height:200px;
+    width:200px;
+}
+
+/*Modificar Carrousell de fotos del Index*/
+
+#carouselExampleInterval {
+
+    height:50%;
+    width:50%
+}
+
+a .nav-item {
+    color:white;
+}
+
+.tituloHorarios {
+    font-weight:bold;
+}
+
+.informacionHorarios {
+    background-color:lightblue;
+    border:2px outset darkblue;
+}
+
+.fondoLogin
+{
+  background-image:url(../fondofavoritos.png);
+  background-repeat:no-repeat;
+  background-size:cover;
+}
+
+.fondoRegister {
+    background-image: url(../fondofavoritos.png);
+    /*background-repeat: no-repeat;
+    background-size: cover;*/
+    
+}
+
+.fondoRegister img {
+    opacity:0.5;
+}
+
+.parada{
+
+    display:flex;
+    justify-content:space-around;
+}
+
+.card-img-top {
+    padding: 5%;
+}
+
+.eliminarFavorito {
+    text-align:center;
+    margin-top:8%;
+    border:4px outset blue;
+    padding:5%;
+}
+
+input.formcontrol.inputbuscar {
+    background-color:white;
+    color: black ;
+    width: 10%;
+}
+
+.tituloPTF {
+    margin:5%;
+    background-color:white;
+    text-align:center;
+    border:3px outset blue;
+}
+
+.tituloSF {
+    margin: 5%;
+    background-color: white;
+    text-align: center;
+    border: 3px outset blue;
+}
+
+.carousel-item {
+    height: 100vh;
+    min-height: 350px;
+    background: no-repeat center center scroll;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+.anclaNav {
+    margin-right: 3%;
+}
+.cajaEnlaces {
+    width: 35%;
+}
+
+.latitudesparadataxi 
+{
+    display:none;
+}
+
+.longitudesparadataxi 
+{
+
+    display:none;
+}
+
+.latitudfavoritosfarmacia {
+    display:none;
+}
+
+.longitudfavoritosfarmacia {
+    display: none;
+}
+
+.latitudfavoritossupermercado
+{
+    display:none;
+}
+
+.longitudfavoritossupermercado {
+    display: none;
+}
+
+
+.centrarParadaTaxi {
+    margin-left:400px;
+    margin-top:20px;
+
+}
+
+

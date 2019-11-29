@@ -1,0 +1,61 @@
+﻿@model SOSBilbao.Models.Supermercado
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1 style="text-align:center; margin-top:2%">Introducir un Nuevo Supermercado</h1>
+
+<h4 style="text-align:center; margin-top:2%">Supermercado</h4>
+<hr />
+<div class="centrarParadaTaxi">
+    <div class="row">
+
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Empresa" class="control-label"></label>
+                    <input asp-for="Empresa" class="form-control" />
+                    <span asp-validation-for="Empresa" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Direccion" class="control-label"></label>
+                    <input asp-for="Direccion" class="form-control" />
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Zona" class="control-label"></label>
+                    <input asp-for="Zona" class="form-control" />
+                    <span asp-validation-for="Zona" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Telefono" class="control-label"></label>
+                    <input asp-for="Telefono" class="form-control" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HoraApertura" class="control-label"></label>
+                    <input asp-for="HoraApertura" class="form-control" />
+                    <span asp-validation-for="HoraApertura" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HoraCierre" class="control-label"></label>
+                    <input asp-for="HoraCierre" class="form-control" />
+                    <span asp-validation-for="HoraCierre" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Volver a la lista de Supermercados</a>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

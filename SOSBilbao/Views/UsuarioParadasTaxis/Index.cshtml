@@ -1,0 +1,75 @@
+﻿@model List<SOSBilbao.Models.UsuarioParadasTaxi>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="tituloPTF">Paradas Taxi Favoritas </h1>
+
+@*Como la lista de "UsuarioParadasTaxi" solo tiene asociado un objeto "ParadaTaxi" o un objeto "Usuario" solo ponemos "in Model"
+    Si por lo que fuera tendria asociado una lista de paradas pondriamos "Model.paradas"*@
+<body style="background-image:url(../mapabilbao.jpg)">
+
+    <input id="favViewParada" type="hidden" value="@ViewData["favoritoParada"]">
+    <div class="row" id="row">
+        @foreach (UsuarioParadasTaxi favoritosparadas in Model)
+        {
+        <div class="card col-sm-12 col-md-6 col-lg-4 border-primary" style="width: 18rem;">
+            <h3 class="nombre card-header direccionesparadataxi ">@favoritosparadas.ParadaTaxi.Direccion</h3>
+            <img style="height: 200px; width: 100%; display: block;" src="@Url.Content(favoritosparadas.ParadaTaxi.Imagen)" alt="Card image">
+            <div class="card-body">
+                <h5 class="card-title latitudesparadataxi">@favoritosparadas.ParadaTaxi.Latitud</h5>
+                <h5 class="card-title longitudesparadataxi">@favoritosparadas.ParadaTaxi.Longitud</h5>
+                <a asp-controller="UsuarioParadasTaxis" asp-action="Delete" asp-route-id="@favoritosparadas.Id"><img class="imagen1" title="Eliminar Favorito Parada Taxi" src="../iconos/iconoeliminar.png" /></a>
+            </div>
+
+
+        </div>
+
+
+        }
+
+    </div>
+
+    <div id="maptaxi"> </div>
+
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin="">
+    </script>
+
+    <script>
+
+        // MAPA BASE DE PARADA TAXI (FAVORITOS PARADA TAXI)
+
+        let mymap = L.map('maptaxi').setView([43.2626276, -2.9475673], 13)
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+
+        }).addTo(mymap);
+
+        // Pasamos las longitudes y las latitudes desde el Index de ParadaTaxi
+
+        var direccionParadaTaxi = document.getElementsByClassName("direccionesparadataxi");
+        var latitudesParadaTaxi = document.getElementsByClassName("latitudesparadataxi");
+        var longitudesParadaTaxi = document.getElementsByClassName("longitudesparadataxi");
+
+
+
+        for (let z = 0; z < 5; z++) {
+
+            var paradaTaxiIcon = L.icon({
+                iconUrl: '../iconos/paradataxi.png',
+                iconSize: [32, 37], // Tamaño del Icono
+            });
+
+            L.marker([longitudesParadaTaxi[z].innerText, latitudesParadaTaxi[z].innerText], { icon: paradaTaxiIcon }).addTo(mymap).bindPopup(direccionParadaTaxi[z]);
+        }
+
+    </script>
+
+</body>
+
+

@@ -1,0 +1,89 @@
+﻿@model List<SOSBilbao.Models.UsuarioFarmacia>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+    <h1 class="tituloSF">Farmacias Favoritas</h1>
+
+@*Como la lista de "UsuarioFarmacia" solo tiene asociado un objeto "Farmacia" o un objeto "Usuario" solo ponemos "in Model"
+    Si por lo que fuera tendria asociado una lista de farmacias pondriamos "Model.Farmacias"*@
+
+@*Enviamos que favorito es igual a True al Javscript para que desde alli se muestre el Alert*@
+
+<body style="background-image:url(../mapabilbao.jpg)">
+    <input id="favView" type="hidden" value="@ViewData["favorito"]">
+
+    <div class="row" id="row">
+        @foreach (UsuarioFarmacia favoritosFarmacia in Model)
+        {
+
+        <div class="card col-sm-12 col-md-6 col-lg-4 border-primary" style="width: 18rem;">
+
+            <h3 class="nombrefavoritosfarmacia card-header ">@favoritosFarmacia.Farmacia.Nombre</h3>
+            <img style="height: 200px; width: 100%; display: block;" src="@Url.Content(favoritosFarmacia.Farmacia.Imagen)" alt="Card image">
+            <div class="card-body">
+                <h5 class="card-title">@favoritosFarmacia.Farmacia.Direccion</h5>
+                <h5 class="card-title">@favoritosFarmacia.Farmacia.Telefono</h5>
+                <h5 class="latitudfavoritosfarmacia card-title ">@favoritosFarmacia.Farmacia.Latitud</h5>
+                <h5 class="longitudfavoritosfarmacia card-title ">@favoritosFarmacia.Farmacia.Longitud</h5>
+                <a asp-controller="UsuarioFarmacias" asp-action="Delete" asp-route-id="@favoritosFarmacia.Id"><img style="margin-right:40%" title="Eliminar Favorito Farmacia" src="../iconos/iconoeliminar.png" /></a>
+                @*<input type="hidden" value="@favoritosFarmacia.Farmacia.Latitud" class="card-subtitle text-muted latitudfavoritosfarmacia" />
+            <input type="hidden" value="@favoritosFarmacia.Farmacia.Longitud" class="card-subtitle text-muted longitudfavoritosfarmacia" />*@
+            </div>
+
+        </div>
+
+
+        }
+
+    </div>
+
+    }
+
+    <div id="mapfarmaciafavoritos"> </div>
+
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin="">
+    </script>
+
+    <script>
+
+        // MAPA BASE DE FARMACIA (FAVORITOS FARMACIAS)
+
+        let mymap = L.map('mapfarmaciafavoritos').setView([43.2626276, -2.9475673], 13)
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+
+        }).addTo(mymap);
+
+        // Pasamos las longitudes y las latitudes desde el index de UsuarioFarmacia
+
+        var nombresFarmacias = document.getElementsByClassName("nombrefavoritosfarmacia");
+        var latitudesFarmacias = document.getElementsByClassName("latitudfavoritosfarmacia");
+        var longitudesFarmacias = document.getElementsByClassName("longitudfavoritosfarmacia");
+
+
+
+        for (let z = 0; z < 5; z++) {
+
+            var farmaciaIcon = L.icon({
+                iconUrl: '../iconos/farmacia.png',
+                iconSize: [32, 37], // Tamaño del Icono
+            });
+
+            L.marker([longitudesFarmacias[z].innerText, latitudesFarmacias[z].innerText], { icon: farmaciaIcon }).addTo(mymap).bindPopup(nombresFarmacias[z]);
+        }
+
+    </script>
+
+</body>
+
+
+
+
+
+

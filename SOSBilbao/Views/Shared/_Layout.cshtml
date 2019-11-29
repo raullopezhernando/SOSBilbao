@@ -1,0 +1,92 @@
+﻿
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<Usuario> _signInManager;
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SOSBilbao</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap_materia.css" />
+    @*Leaflet CSS in the Head Section*@
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin="" />
+    
+
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <img id="logo" src="~/fimagenes/logososbilbao.png" alt="logososbilbao" style="padding-left:4%;padding-right:2%; height:100px">
+            <div class="container">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <partial name="_LoginPartial" />
+                    <ul class="navbar-nav cajaEnlaces">
+                        <li class="nav-item anclaNav">
+                            <a class="nav-item" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item anclaNav">
+                            <a class="nav-item" asp-area="" asp-controller="Farmacias" asp-action="Index">Farmacias</a>
+                        </li>
+                        <li class="nav-item anclaNav">
+                            <a class="nav-item" asp-area="" asp-controller="ParadasTaxi" asp-action="Index">Paradas Taxi</a>
+                        </li>
+                        <li class="nav-item anclaNav">
+                            <a class="nav-item" asp-area="" asp-controller="Supermercados" asp-action="Index">Supermercados</a>
+                        </li>
+
+                    </ul>
+
+                    @if (_signInManager.IsSignedIn(User)) {
+
+
+                    <div class="dropdown show">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Favoritos
+                        </a>
+
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item " asp-controller="UsuarioFarmacias" asp-action="Index">Farmacias Favoritas</a>
+                            <a class="dropdown-item " asp-controller="UsuarioSupermercados" asp-action="Index">Supermercados Favoritos</a>
+                            <a class="dropdown-item b" asp-controller="UsuarioParadasTaxis" asp-action="Index">Paradas Taxi Favoritas</a>
+                        </div>
+                    </div>
+                            }
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer bg-light text-muted">
+        <div class="container">
+            &copy; 2019 - SOSBilbao - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    @*Leaflet Javascript*@
+
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin=""></script>
+
+
+    <script src="https://form.jotformeu.com/static/feedback2.js" type="text/javascript">new JotformFeedback({ formId: "93311986857370", buttonText: "Opiniones y Sugerencias", base: "https://form.jotformeu.com/", background: "#4a90e2", fontColor: "#FFFFFF", buttonSide: "left", buttonAlign: "center", type: 1, width: 700, height: 500, isCardForm: false });</script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

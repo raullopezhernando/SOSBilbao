@@ -1,0 +1,121 @@
+﻿@model SOSBilbao.Models.ViewModels.MostrarParadasTaxiVM
+@using Newtonsoft.Json;
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<Usuario> _signInManager;
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+<h1 style="margin:2%; color:black ;background-color:white; border:1px solid black ;text-align:center"> Paradas Taxi</h1>
+
+
+
+
+@*SELECCIONAR LA ZONA*@
+
+
+<form asp-controller="ParadasTaxi" asp-action="Index">
+    <input type="text" class="form-control" placeholder="Introduzca el Nombre de la Parada de Taxi" name="nombre" style="background-color:white;color: black ;width: 23%" />
+    <select name="zona" id="selectTipo">
+        <option value="">Todos</option>
+        @foreach (Zona zona in Model.Zonas)
+        {
+            <option value="@zona.Nombre">@zona.Nombre</option>
+        }
+    </select>
+
+    <input type="submit" value="Buscar Paradas Taxi" />
+</form>
+@if (Model.Zonas.Count == 0)
+{
+    <h1>No se ha encontrado ninguna Parada de Taxi en esta zona</h1>
+}
+else
+{
+    <body style="background-image:url(../mapabilbao.jpg)">
+        <div class="row" id="row">
+
+            @*MOSTRAR LAS FARMACIAS EN FUNCION DE LA ZONA*@
+
+            @*Pongo Model.Farmacias porque es la forma de referirse al ViewModel siempre Model.Farmacias en vez de ViewModels.Farmacias*@
+            @*IMPORTANTE. Para hacer referencia a la imagen se pone @Url.Content(farmacia.Imagen) y en la imagen de base de datos se pondria
+                en cada imagen "~/fimagenes/" y el nombre de la foto que seria farmacia1.jpg*@
+
+
+            @foreach (ParadaTaxi parada in Model.ParadaTaxis)
+            {
+            <div class="card col-sm-12 col-md-6 col-lg-4 border-primary" style="width:18rem;background-color:aliceblue ;border: 2px outset blue">
+                <img style="height: 230px; width: 100%;" src="@Url.Content(parada.Imagen)" class="card-img-top " alt="">
+                <div class="card-body ">
+                    <h5 class="direccion card-title">@parada.Direccion</h5>
+                    <p class="card-text">@parada.Zona.Nombre</p>
+                    <p class=" latitudParadaTaxi card-text">@parada.Latitud</p>
+                    <p class="longitudParadaTaxi card-text">@parada.Longitud</p>
+                </div>
+
+                <div class="card-body">
+                    @*Si esta logeado aparecera el boton de "Agregar Favoritos" sino no y enviara la Id para asociar el usuario al favorito*@
+
+                    @if (_signInManager.IsSignedIn(User))
+                    {
+
+                        <a asp-controller="UsuarioParadasTaxis" style="padding-left:5%; padding-right:15%" asp-action="GuardarFavorito" asp-route-id="@parada.Id"><img title="Agregar Favorito" src="../iconos/iconofavorito.png" /></a>
+                        <span><a asp-action="Create" style="padding-right:15%" asp-route-id="@parada.Id"><img title="Crear Parada Taxi" src="../iconos/iconocrear.png" /></a>  <a asp-action="Delete" asp-route-id="@parada.Id"><img title="Eliminar Parada Taxi" src="../iconos/iconoeliminar.png" /></a></span>
+                    }
+
+                </div>
+
+            </div>
+
+            }
+        </div>
+    </body>
+}
+
+<div id="maptaxiindex"> </div>
+
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin="">
+</script>
+
+
+
+<script>
+
+                // MAPA BASE DE PARADA TAXI (FAVORITOS PARADA TAXI)
+
+                let mymap = L.map('maptaxiindex').setView([43.2626276, -2.9475673], 13)
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+
+                }).addTo(mymap);
+
+                // Pasamos las longitudes y las latitudes desde el Index de ParadaTaxi
+
+                var direccionParadaTaxi = document.getElementsByClassName("direccion");
+                var latitudesParadaTaxi = document.getElementsByClassName("latitudParadaTaxi");
+                var longitudesParadaTaxi = document.getElementsByClassName("longitudParadaTaxi");
+
+
+                for (let z = 0; z < 60; z++) {
+
+                    var paradaTaxiIcon = L.icon({
+                        iconUrl: '../iconos/paradataxi.png',
+                        iconSize: [32, 37], // Tamaño del Icono
+                    });
+
+                    L.marker([longitudesParadaTaxi[z].innerText, latitudesParadaTaxi[z].innerText], { icon: paradaTaxiIcon }).addTo(mymap).bindPopup(direccionParadaTaxi[z]);
+                }
+
+</script>
+
+
+
+

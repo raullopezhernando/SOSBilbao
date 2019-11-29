@@ -1,0 +1,42 @@
+﻿@model SOSBilbao.Models.ParadaTaxi
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<h1 style="text-align:center; margin-top:2%">Introducir Parada Taxi</h1>
+
+
+<h4 style="text-align:center;margin-top:2%">ParadaTaxi</h4>
+<hr />
+<div class="centrarParadaTaxi">
+    <div class="row">
+        <div class="col-md-4 ">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Zona" class="control-label"></label>
+                    <input asp-for="Zona" class="form-control" />
+                    <span asp-validation-for="Zona" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Direccion" class="control-label"></label>
+                    <input asp-for="Direccion" class="form-control" />
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Volver a la lista de Paradas Taxi</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

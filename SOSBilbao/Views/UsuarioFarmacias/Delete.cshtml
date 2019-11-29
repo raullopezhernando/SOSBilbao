@@ -1,0 +1,22 @@
+﻿@model SOSBilbao.Models.UsuarioFarmacia
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+    <div class="eliminarFavorito">
+        <h1 style="color:red">ELIMINAR FARMACIA FAVORITA </h1>
+
+        <h3 style="font-style:italic">¿Estas seguro de querer eliminar esta Farmacia de sus favoritos?</h3>
+        <div>
+
+            <hr />
+            <dl class="row">
+            </dl>
+
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <input type="submit" value="Delete" class="btn btn-danger"/>    |   <a class="btn btn-success" role="button" asp-action="Index">Volver a la lista de Farmacias Favoritas</a>
+            </form>
+        </div>
+    </div>

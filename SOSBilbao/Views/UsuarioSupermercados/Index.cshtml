@@ -1,0 +1,83 @@
+﻿@model List<SOSBilbao.Models.UsuarioSupermercado>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+
+<h1 class="tituloSF">Supermercados Favoritos </h1>
+<body style="background-image:url(../mapabilbao.jpg)">
+
+    @*Como la lista de "UsuarioSupermercado" solo tiene asociado un objeto "Suoermercado" o un objeto "Usuario" solo ponemos "in Model"
+        Si por lo que fuera tendria asociado una lista de supermercados pondriamos "Model.Supermercados"*@
+
+    <input id="favViewSupermercado" type="hidden" value="@ViewData["favoritoSupermercado"]">
+    <div class="row" id="row">
+
+        @foreach (UsuarioSupermercado favoritossupermercado in Model)
+        {
+        <div class="card col-sm-12 col-md-6 col-lg-4 border-primary" style="width: 18rem;">
+            <h3 class="nombrefavoritossupermercado card-header ">@favoritossupermercado.Supermercado.Empresa</h3>
+            <img style="height: 200px; width: 100%; display: block;" src="@Url.Content(favoritossupermercado.Supermercado.Imagen)" alt="Card image">
+            <div class="card-body">
+                <h5 class="card-title">@favoritossupermercado.Supermercado.Direccion</h5>
+                <h6 class="card-subtitle text-muted">@favoritossupermercado.Supermercado.Zona</h6>
+                <h6 class="card-subtitle text-muted">@favoritossupermercado.Supermercado.Telefono</h6>
+                <h6 class="latitudfavoritossupermercado card-subtitle text-muted ">@favoritossupermercado.Supermercado.Latitud</h6>
+                <h6 class="longitudfavoritossupermercado card-subtitle text-muted ">@favoritossupermercado.Supermercado.Longitud</h6>
+                <a asp-controller="UsuarioSupermercados" asp-action="Delete" asp-route-id="@favoritossupermercado.Id"><img class="imagen1" title="Eliminar Favorito Supermercado" src="../iconos/iconoeliminar.png" /></a>
+            </div>
+
+
+        </div>
+        }
+
+    </div>
+
+    <div id="mapsupermercado"> </div>
+
+
+
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin="">
+    </script>
+
+    <script>
+
+        // MAPA BASE DE SUPERMERCADOS (FAVORITOS SUPERMERCADOS)
+
+        let mymap = L.map('mapsupermercado').setView([43.2626276, -2.9475673], 13)
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+
+        }).addTo(mymap);
+        // Pasamos las longitudes y las latitudes desde el index de UsuarioSupermercados
+
+
+        var nombreSupermercado = document.getElementsByClassName("nombrefavoritossupermercado");
+        var latitudSupermercado = document.getElementsByClassName("latitudfavoritossupermercado");
+        var longitudSupermercado = document.getElementsByClassName("longitudfavoritossupermercado");
+
+
+
+        for (let z = 0; z < 20; z++) {
+
+            var supermarketIcon = L.icon({
+                iconUrl: '../iconos/supermarket.png',
+                iconSize: [32, 37], // Tamaño del Icono
+            });
+
+            L.marker([longitudSupermercado[z].innerText, latitudSupermercado[z].innerText], { icon: supermarketIcon }).addTo(mymap).bindPopup(nombreSupermercado[z]);
+
+        }
+
+    </script>
+
+
+</body>
+

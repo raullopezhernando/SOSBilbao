@@ -1,0 +1,213 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@model SOSBilbao.Models.ViewModels.MostrarFarmaciasVM
+
+@inject SignInManager<Usuario> _signInManager;
+
+
+@using Newtonsoft.Json;
+@*@model IEnumerable<SOSBilbao.Models.Farmacia>*@
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@*@{
+        List<Farmacia> farmacias = new List<Farmacia>();
+        string json = JsonConvert.SerializeObject(Model);
+
+        farmacias = Model;
+
+
+    }*@
+@*<script type="text/javascript">
+        let farmacias = @json;
+
+    </script>*@
+
+@{
+    //Calculo del Tiempo que queda para cerrar la Farmacia en horario de Mañana
+
+    static string DiferenciaHoraActualHoraCierreMañana(string horaCierreSupermercadoMañana)
+    {
+
+        DateTime horaCierreSM = Convert.ToDateTime(horaCierreSupermercadoMañana);
+        DateTime horaActual = DateTime.Now;
+        TimeSpan hora = horaCierreSM.Subtract(horaActual);
+        String diferencia = String.Format("{0}:{1}:{2}", (hora.Hours - 1), hora.Minutes, hora.Seconds);
+        return diferencia;
+
+    }
+
+    //Calculo del Tiempo que queda para cerrar la Farmacia en horario de Tarde
+
+    static string DiferenciaHoraActualHoraCierreTarde(string horaCierreSupermercadoTarde)
+    {
+
+
+        DateTime horaCierreST = Convert.ToDateTime(horaCierreSupermercadoTarde);
+        DateTime horaActual = DateTime.Now;
+        TimeSpan hora = horaCierreST.Subtract(horaActual);
+        String diferencia = String.Format("{0}:{1}:{2}", (hora.Hours - 1), hora.Minutes, hora.Seconds);
+        return diferencia;
+
+    }
+}
+
+
+<h1 style="margin:2%; color:black ;background-color:white; border:1px solid black ;text-align:center"> Farmacias</h1>
+
+
+
+
+
+@*SELECCIONAR LA ZONA*@
+
+
+<form asp-controller="Farmacias" asp-action="Index">
+    <input type="text" class="form-control inputbuscar" placeholder="Introduzca el Nombre de la Farmacia" name="nombre" style="background-color:white;color: black ;width: 23%" />
+    <select name="zona" id="selectTipo">
+        <option value="">Todos</option>
+        @foreach (Zona zona in Model.Zonas)
+        {
+            <option value="@zona.Nombre">@zona.Nombre</option>
+        }
+    </select>
+
+    <input type="submit" value="Buscar Farmacia" />
+</form>
+@if (Model.Zonas.Count == 0)
+{
+    <h1>No se ha encontrado ninguna Farmacia en esta zona</h1>
+}
+else
+{
+    <body style="background-image:url(mapabilbao.jpg)">
+        <div class="row" id="row">
+
+            @*MOSTRAR LAS FARMACIAS EN FUNCION DE LA ZONA*@
+
+            @*Pongo Model.Farmacias porque es la forma de referirse al ViewModel siempre Model.Farmacias en vez de ViewModels.Farmacias*@
+            @*IMPORTANTE. Para hacer referencia a la imagen se pone @Url.Content(farmacia.Imagen) y en la imagen de base de datos se pondria
+                en cada imagen "~/fimagenes/" y el nombre de la foto que seria farmacia1.jpg*@
+
+
+            @foreach (Farmacia farmacia in Model.Farmacias)
+            {
+                <div class="card col-sm-12 col-md-6 col-lg-4 border-primary" style="width:18rem;background-color:aliceblue ;border: 2px outset blue">
+                    <h3 class="nombre card-header ">@farmacia.Nombre</h3>
+                    <div class="card-body">
+                        <h5 class="card-title">@farmacia.Direccion</h5>
+                        <h6 class="card-subtitle text-muted">@farmacia.Telefono</h6>
+                        <h6 class="card-subtitle text-muted">@farmacia.Zona.Nombre</h6>
+                        <h6 class="latitud card-subtitle text-muted ">@farmacia.Latitud</h6>
+                        <h6 class="longitud card-subtitle text-muted ">@farmacia.Longitud</h6>
+                    </div>
+                    <img style="height: 200px; width: 100%; display: block;" src="@Url.Content(farmacia.Imagen)" alt="Card image">
+                    <div class="card-body">
+
+                        @*Si esta logeado aparecera el boton de "Agregar Favoritos" sino no y enviara la Id para asociar el usurio al favorito*@
+
+                        @if (_signInManager.IsSignedIn(User))
+
+                        {
+
+                            <a role="button" asp-controller="UsuarioFarmacias" style="margin-left:5%;margin-right:2%" asp-action="GuardarFavorito" asp-route-id="@farmacia.Id"><img title="Agregar Favorito"src="../iconos/iconofavorito.png" alt="AgregarFavorito" /></a>
+                           
+                               <span><a asp-action="Create" style="margin-right:2%" asp-route-id="@farmacia.Id"><img  title="Crear Farmacia" src="../iconos/iconocrear.png" /></a>  <a asp-action="Delete" style="margin-right:2%" asp-route-id="@farmacia.Id"><img title="Eliminar Farmacia" src="../iconos/iconoeliminar.png" /></a></span>
+
+                            
+                        }
+
+                        @*INICIO DEL MODAL PARA "MOSTRAR HORARIOS DE FARMACIAS"*@
+
+
+                        <a data-toggle="modal" data-target=".bd-example-modal-sm"><img title="Ver Horario" src="../iconos/iconohorario.png" /></a>
+
+                        <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content" style="background-color:aqua;border:4px outset blue">
+                                    <div class="modal-header tituloHorarios">
+                                        <h5 class="modal-title" style="font-weight:bold">Horario Farmacias</h5>
+                                        <div class="modal-body">
+                                            <p>HORARIO APERTURA MAÑANA : @farmacia.HorarioAperturaMañana</p>
+                                            <p>HORARIO CIERRE MAÑANA: @farmacia.HorarioCierreMañana </p>
+                                            <p>HORARIO APERTURA TARDE: @farmacia.HorarioAperturaTarde</p>
+                                            <p>HORARIO CIERRE TARDE: : @farmacia.HorarioCierreTarde</p>
+
+                                            @if (farmacia.HorarioCierreMañana == "13:30")
+                                            {
+                                                <p> ¿CUANTO FALTA PARA EL CIERRE A LA MAÑANA?  : @DiferenciaHoraActualHoraCierreMañana(farmacia.HorarioCierreMañana)</p>
+                                            }
+                                            else
+                                            {
+                                                <p>NO CIERRA AL MEDIODIA</p>
+                                            }
+
+                                            @if (farmacia.HorarioCierreTarde == "19:30")
+                                            {
+                                                <p> ¿CUANTO FALTA PARA EL CIERRE A LA TARDE?  : @DiferenciaHoraActualHoraCierreTarde(farmacia.HorarioCierreTarde)</p>
+                                            }
+                                            else
+                                            {
+                                                <p>ESTA FARMACIA CIERRA A LAS 22:00</p>
+                                            }
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @*FINAL DEL MODAL PARA "MOSTRAR HORARIOS DE FARMACIAS"*@
+
+                    </div>
+
+                </div>
+
+
+            }
+        </div>
+    </body>
+}
+
+<div id="mapfarmacia"> </div>
+
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin="">
+</script>
+
+<script>
+
+    // MAPA BASE DE FARMACIA (FAVORITOS FARMACIAS)
+
+    let mymap = L.map('mapfarmacia').setView([43.2626276, -2.9475673], 13)
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+
+    }).addTo(mymap);
+
+    // Pasamos las longitudes y las latitudes desde el index de UsuarioFarmacia
+
+    var nombresFarmacias = document.getElementsByClassName("nombre");
+    var latitudesFarmacias = document.getElementsByClassName("latitud");
+    var longitudesFarmacias = document.getElementsByClassName("longitud");
+
+
+
+    for (let z = 0; z < 40; z++) {
+
+        var farmaciaIcon = L.icon({
+            iconUrl: '../iconos/farmacia.png',
+            iconSize: [32, 37], // Tamaño del Icono
+        });
+
+        L.marker([longitudesFarmacias[z].innerText, latitudesFarmacias[z].innerText], { icon: farmaciaIcon }).addTo(mymap).bindPopup(nombresFarmacias[z]);
+    }
+
+</script>
+
